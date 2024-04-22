@@ -6,8 +6,6 @@ import gradio as gr
 from transformers import pipeline, AutoTokenizer, TFAutoModelForSeq2SeqLM
 import subprocess
 import torch
-#Google Text to Speech
-from gtts import gTTS
 import tempfile
 from langdetect import detect
 from transformers import MarianMTModel, MarianTokenizer
