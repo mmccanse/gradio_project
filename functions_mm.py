@@ -113,18 +113,38 @@ def handle_query(user_query):
     
 #Language models and functions ############################################################################
 
-#Setup cache mechanism to initialize translation model at module level to improve app speed.
+#Define function to load Helsinki model names from txt file
+def load_model_names_from_file(filename="helsinki_models.txt"):
+    with open(filename, 'r') as file:
+        return [line.strip() for line in file if line.strip()]
 
+all_model_names = load_model_names_from_file()
+
+
+#Setup cache mechanism to initialize translation model at module level to improve app speed.
 #Define global variables for tokenizer and model
 helsinki_model_cache = {}
 
+
 def get_helsinki_model_and_tokenizer(src_lang, target_lang):
-    helsinki_model_name =f"Helsinki-NLP/opus-mt-{src_lang}-{target_lang}"
-    if helsinki_model_name not in helsinki_model_cache:
-        tokenizer = MarianTokenizer.from_pretrained(helsinki_model_name)
-        model = MarianMTModel.from_pretrained(helsinki_model_name)
-        helsinki_model_cache[helsinki_model_name] = (tokenizer, model)
-    return helsinki_model_cache[helsinki_model_name]
+    # check for "big" model first
+    big_model_name = f"Helsinki-NLP/opus-mt-tc-big-{src_lang}-{target_lang}"
+    regular_model_name = f"Helsinki-NLP/opus-mt-{src_lang}-{target_lang}"
+    
+    # determine which model to use
+    if big_model_name in all_model_names:
+        model_name = big_model_name
+    elif regular_model_name in all_model_names:
+        model_name = regular_model_name
+    else:
+        raise ValueError("No suitable translation model available for the specified language pair")
+    
+    #load model and tokenizer if not cached
+    if model_name not in helsinki_model_cache:
+        tokenizer = MarianTokenizer.from_pretrained(model_name)
+        model = MarianMTModel.from_pretrained(model_name)
+        helsinki_model_cache[model_name] = (tokenizer, model)
+    return helsinki_model_cache[model_name]
 
 #Define function to transcribe audio to text and then translate it into the specified language
 def translate(transcribed_text, target_lang="es"):
