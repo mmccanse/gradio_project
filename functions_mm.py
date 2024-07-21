@@ -22,7 +22,7 @@ import re
 load_dotenv()
 
 # Set the model name for our LLMs.
-OPENAI_MODEL = "gpt-3.5-turbo"
+OPENAI_MODEL = "gpt-4o-mini"
 # Store the API key in a variable.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -71,7 +71,7 @@ default_language = "English"
 #Setting the Chatbot Model #################################################################################
 
 # Set the model name for our LLMs.
-OPENAI_MODEL = "gpt-3.5-turbo"
+OPENAI_MODEL = "gpt-4o-mini"
 # Store the API key in a variable.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
